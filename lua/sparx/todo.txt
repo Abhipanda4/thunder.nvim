@@ -1,0 +1,5 @@
+[IMPROVEMENTS]
+
+* Cursor positioning
+* Commands for rare usecases instead of mappings
+* Option to show file info
