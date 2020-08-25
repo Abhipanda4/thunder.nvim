@@ -4,7 +4,7 @@ THUNDER.NVIM
 My personalized neovim(NVIM v0.5.0) configuration.
 
 ## Pre-Requisites:
-* python(3.8) with pynvim installed
+* python(3.9) with pynvim installed
 * [ripgrep](https://github.com/BurntSushi/ripgrep) - A faster alternatice to grep/ag/vimgrep
 * [fd](https://github.com/sharkdp/fd) - A faster alternative to find
 

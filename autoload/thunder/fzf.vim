@@ -12,16 +12,17 @@ endfunction
 
 function! s:GetFZFPalette() abort
     let l:fzf_colors = {
-        \ 'fg+': g:thunder_color_palette.yellow,
-        \ 'bg+': g:thunder_color_palette.black,
-        \ 'hl+': g:thunder_color_palette.cyan2,
-        \ 'fg': g:thunder_color_palette.white,
-        \ 'bg': g:thunder_color_palette.black,
-        \ 'hl': g:thunder_color_palette.blue,
-        \ 'gutter': g:thunder_color_palette.black,
-        \ 'info': g:thunder_color_palette.purple,
-        \ 'prompt': g:thunder_color_palette.purple,
-        \ 'pointer': g:thunder_color_palette.blue
+        \ 'fg+': g:color_palette.yellow1,
+        \ 'bg+': g:color_palette.dark,
+        \ 'hl+': g:color_palette.yellow2,
+        \ 'fg': g:color_palette.light,
+        \ 'bg': g:color_palette.dark,
+        \ 'hl': g:color_palette.cyan1,
+        \ 'gutter': g:color_palette.dark,
+        \ 'info': g:color_palette.purple1,
+        \ 'pointer': g:color_palette.yellow1,
+        \ 'prompt': g:color_palette.purple1,
+        \ 'header': g:color_palette.purple1
         \ }
     return join(map(items(l:fzf_colors), 'v:val[0] . ":" . v:val[1]'), ",")
 endfunction
@@ -40,16 +41,22 @@ function! s:FZFFileHandler(lines) abort
 endfunction
 
 
+function s:GetCWDPrompt() abort
+  let l:cwd = substitute(getcwd(), $HOME, '~', '')
+  return "  " .. l:cwd .. "/"
+endfunction
+
 function! s:GetFZFFileOptions() abort
     let l:colors = s:GetFZFPalette()
     if strlen(l:colors) > 0
         let l:colors = " --color=" .. "'" .. s:GetFZFPalette() .. "'"
     endif
 
-    let l:display = " --margin 2,5,2,5 --reverse --info=inline --header=''"
-    let l:extra = " --prompt='F> ' --marker='> '"
+    let l:display = " --margin 2,2,2,2 --reverse --info=hidden --header=''"
+    let l:extra = " --no-multi --prompt='➤  ' --pointer='➤ ' --cycle"
+    let l:header = " --header='\n" .. s:GetCWDPrompt() .. "\n\n'"
     let l:actions = " --expect=ctrl-v,ctrl-x"
-    return l:colors .. l:display .. l:extra .. l:actions
+    return l:colors .. l:display .. l:extra .. l:actions .. l:header
 endfunction
 
 
@@ -57,7 +64,7 @@ function! thunder#fzf#FuzzyFindFiles() abort
     call fzf#run({
         \ 'source': s:GetCmdForFilesList(),
         \ 'options': s:GetFZFFileOptions(),
-        \ 'window': 'lua require("lightning/windows").open_centered_float_with_border()',
+        \ 'window': 'lua require("thunder/windows").make_centered_floating_window()',
         \ 'sink*': function('s:FZFFileHandler')
         \ })
 endfunction

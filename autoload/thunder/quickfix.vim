@@ -42,6 +42,7 @@ endfunction
 function! thunder#quickfix#JumpToNextLoclistItem() abort
   let loclist_items = s:get_sorted_loclist()
   if len(loclist_items) == 0
+    echohl Error | echo 'No items in Location list for current buffer' | echohl None
     return
   end
   let curr_row = line('.')
@@ -62,6 +63,7 @@ endfunction
 function! thunder#quickfix#JumpToPrevLoclistItem() abort
   let loclist_items = s:get_sorted_loclist()
   if len(loclist_items) == 0
+    echohl Error | echo 'No items in Location list for current buffer' | echohl None
     return
   end
   let curr_row = line('.')

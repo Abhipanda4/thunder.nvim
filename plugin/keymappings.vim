@@ -89,7 +89,3 @@ nnoremap <silent> [t :tabprevious<cr>
 
 " replace easily
 nnoremap <leader>r :%s//g<Left><Left>
-
-" Project wide grep
-command! -nargs=+ -complete=dir Grep lua require('lightning/grepper').AsyncGrep(<q-args>)
-nnoremap <leader>g :Grep<space>

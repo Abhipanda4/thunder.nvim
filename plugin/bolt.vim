@@ -2,11 +2,11 @@ if exists('g:loaded_bolt') | finish | endif
 let g:loaded_bolt = 1
 
 function ActiveStatusline(winid)
-  return luaeval("require('bolt').active_statusline(" . a:winid . ")")
+  return luaeval("require('bolt').build_statusline(" . a:winid . ", true)")
 endfunction
 
 function InactiveStatusline(winid)
-  return luaeval("require('bolt').inactive_statusline(" . a:winid . ")")
+  return luaeval("require('bolt').build_statusline(" . a:winid . ", false)")
 endfunction
 
 function! s:UpdateStatuslines()

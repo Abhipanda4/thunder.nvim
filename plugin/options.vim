@@ -8,7 +8,7 @@
 set termguicolors
 
 set completeopt=menuone,noinsert,noselect
-set shortmess+=c
+set shortmess=filnxtToOFcs
 
 " Line settings
 set wrapscan
@@ -82,3 +82,7 @@ set wildignore+=**/doc/*.txt                     " All doc files in cwd
 " Timeout settings
 set timeoutlen=1000
 set ttimeoutlen=0
+set updatetime=500
+
+" FIllchars
+set fillchars=diff:.

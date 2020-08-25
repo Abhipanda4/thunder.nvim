@@ -1,137 +1,139 @@
 local vim = vim
-local segments = require('bolt/segments')
-local SPECIAL_BUFFERS = {
-   ['sparx'] = 'Sparx',
-   ['undotree'] = 'UndoTree',
-   ['quickfix'] = 'Quickfix List',
-   ['loclist'] = 'Location List'
-}
+local assembler = require('bolt/assembler')
+local bolt_utils = require('bolt/utils')
 local M = {}
+local SPECIAL_FILETYPES = {'NvimTree', 'qf', 'undotree'}
 
-local function add_padding(str)
-   return ' ' .. str .. ' '
+M.statusline = {
+   active = {
+      left = {
+         {
+            component = 'mode',
+            highlight = 'BoltModeHighlight',
+            add_padding = true,
+         },
+         {
+            component = 'filename',
+            highlight = 'User5',
+            add_padding = true,
+         },
+         {
+            component = 'is_file_modified',
+            highlight = 'User6',
+         },
+      },
+      right = {
+         {
+            component = 'diagnostics_error',
+            highlight = 'LspDiagnosticsSignError',
+            icon = ' ',
+         },
+         {
+            component = 'diagnostics_warning',
+            highlight = 'LspDiagnosticsSignWarning',
+            icon = ' ',
+         },
+         {
+            component = 'diagnostics_hint',
+            highlight = 'LspDiagnosticsSignHint',
+            icon = ' '
+         },
+         {
+            component = 'cursor_info',
+            highlight = 'BoltModeHighlight',
+            add_padding = true,
+         },
+      },
+   },
+   inactive = {
+      left = {
+         {
+            component = 'filename',
+            highlight = 'User8',
+            add_padding = true,
+         },
+      },
+      right = {
+         {
+            component = 'cursor_info',
+            highlight = 'User8',
+            add_padding = true,
+         },
+      },
+   },
+   active_special = {
+      left = {
+         {
+            component = 'special_filetype',
+            highlight = 'User1',
+            add_padding = true,
+         },
+      },
+      right = {}
+   },
+   inactive_special = {
+      left = {},
+      right = {}
+   }
+}
+
+local function get_window_opts(winnr)
+   local bufnr = vim.api.nvim_win_get_buf(winnr)
+   return {
+      winnr = winnr,
+      bufnr = bufnr
+   }
 end
 
-local function merge_components(components)
-   local non_empty_components = vim.fn.filter(components, 'v:val != ""')
-   return add_padding(vim.fn.join(non_empty_components, ' | '))
+local function is_special_buffer(win_opts)
+   local filetype = vim.api.nvim_buf_get_option(win_opts.buffer_handle, 'filetype')
+   for _, spcl_ft in ipairs(SPECIAL_FILETYPES) do
+      if filetype == spcl_ft then
+         return true
+      end
+   end
+   return false
 end
 
-local function redraw_colors(curr_mode)
-   if curr_mode == 'N' or curr_mode == 'C' then
-      vim.api.nvim_command('highlight link ModeHighlight User1')
-   elseif curr_mode == 'I' then
-      vim.api.nvim_command('highlight link ModeHighlight User2')
-   elseif curr_mode == 'V' or curr_mode == 'VB' then
-      vim.api.nvim_command('highlight link ModeHighlight User3')
+local function reset_mode_highlight()
+   local curr_mode = bolt_utils.get_current_mode()
+   if curr_mode == 'I' then
+      vim.api.nvim_command('highlight link BoltModeHighlight User2')
    elseif curr_mode == 'R' then
-      vim.api.nvim_command('highlight link ModeHighlight User4')
+      vim.api.nvim_command('highlight link BoltModeHighlight User3')
+   elseif curr_mode == 'V' or curr_mode == 'VB' then
+      vim.api.nvim_command('highlight link BoltModeHighlight User4')
+   else
+      vim.api.nvim_command('highlight link BoltModeHighlight User1')
    end
 end
 
-local function create_left_active_statusline(win_handle, buf_handle)
-   local stl = ''
-   local curr_mode = segments.mode_component()
-   redraw_colors(curr_mode)
-   stl = stl .. '%#ModeHighlight#' .. add_padding(curr_mode) .. '%0*'
-   local file_prop_components = {
-      segments.filename_component(win_handle, buf_handle, true),
-      segments.readonly_component(win_handle, buf_handle),
-      segments.modified_component(win_handle, buf_handle),
-   }
-   local file_props = merge_components(file_prop_components)
-   stl = stl .. '%5*' .. file_props .. '%0*'
+local function build_active_statusline(win_opts)
+   if is_special_buffer(win_opts) then
+      return assembler.assemble_statusline(win_opts,
+                                           M.statusline.active_special)
+   end
+   return assembler.assemble_statusline(win_opts, M.statusline.active)
+end
+
+local function build_inactive_statusline(win_opts)
+   if is_special_buffer(win_opts) then
+      return assembler.assemble_statusline(win_opts,
+                                           M.statusline.inactive_special)
+   end
+   return assembler.assemble_statusline(win_opts, M.statusline.inactive)
+end
+
+function M.build_statusline(winnr, is_active)
+   local win_opts = get_window_opts(winnr)
+   reset_mode_highlight()
+   local stl = ""
+   if is_active then
+      stl = build_active_statusline(win_opts)
+   else
+      stl = build_inactive_statusline(win_opts)
+   end
    return stl
-end
-
-local function create_right_active_statusline(win_handle, buf_handle)
-   local stl = ''
-   local diagnostics = segments.diagnostics_component(win_handle, buf_handle)
-   if diagnostics ~= nil then
-      stl = stl .. '%#LspDiagnosticsError#' .. diagnostics.errors .. '%0*'
-      stl = stl .. '%#LspDiagnosticsWarning#' .. diagnostics.warnings .. '%0*'
-      stl = stl .. '%#LspDiagnosticsHint#' .. diagnostics.hints .. '%0*'
-      stl = stl .. '%#LspDiagnosticsOk#' .. diagnostics.ok .. '%0*'
-   end
-
-   local filetype = segments.filetype_component(win_handle, buf_handle)
-   stl = stl .. '%5*' .. add_padding(filetype) .. '%0*'
-   local lineinfo = segments.lineinfo_component(win_handle, buf_handle)
-   stl = stl .. '%#ModeHighlight#' .. add_padding(lineinfo) .. '%0*'
-   return stl
-end
-
-local function create_left_inactive_statusline(win_handle, buf_handle)
-   local stl = ''
-   local file_prop_components = {
-      segments.filename_component(win_handle, buf_handle, false),
-      segments.readonly_component(win_handle, buf_handle),
-      segments.modified_component(win_handle, buf_handle)
-   }
-   local file_props = merge_components(file_prop_components)
-   stl = stl .. '%6*' .. file_props .. '%0*'
-   return stl
-end
-
-local function create_right_inactive_statusline(win_handle, buf_handle)
-   local stl = ''
-   local lineinfo = segments.lineinfo_component(win_handle, buf_handle)
-   stl = stl .. '%6*' .. add_padding(lineinfo) .. '%0*'
-   return stl
-end
-
-local function get_speacial_buffer_name(win_handle, buf_handle)
-   local filetype = vim.api.nvim_buf_get_option(buf_handle, 'filetype')
-   if filetype == 'qf' then
-      local wininfo = vim.fn.getwininfo(win_handle)
-      if wininfo[1].loclist == 1 then return 'loclist' else return 'quickfix' end
-   end
-   return filetype
-end
-
-local function special_buffer_active_statusline(win_handle, buf_handle)
-   local special_bufname = get_speacial_buffer_name(win_handle, buf_handle)
-   if SPECIAL_BUFFERS[special_bufname] ~= nil then
-      local stl = ''
-      stl = '%#ModeHighlight#'
-      stl = stl .. add_padding(SPECIAL_BUFFERS[special_bufname])
-      stl = stl .. '| - %0*'
-      return stl
-   end
-   return nil
-end
-
-local function special_buffer_inactive_statusline(win_handle, buf_handle)
-   local special_bufname = get_speacial_buffer_name(win_handle, buf_handle)
-   if special_bufname == nil then return nil end
-   if SPECIAL_BUFFERS[special_bufname] ~= nil then
-      local stl = ''
-      stl = stl .. '%6*' .. add_padding(SPECIAL_BUFFERS[special_bufname])
-      stl = stl .. '| - %0*'
-      return stl
-   end
-   return nil
-end
-
-function M.active_statusline(win_handle)
-   local buf_handle = vim.api.nvim_win_get_buf(win_handle)
-   local special_stl = special_buffer_active_statusline(win_handle, buf_handle)
-   if special_stl ~= nil then return special_stl end
-   local left_active_stl = create_left_active_statusline(win_handle, buf_handle)
-   local right_active_stl = create_right_active_statusline(win_handle, buf_handle)
-   return left_active_stl .. '%=' .. right_active_stl
-end
-
-function M.inactive_statusline(win_handle)
-   local buf_handle = vim.api.nvim_win_get_buf(win_handle)
-   local special_stl = special_buffer_inactive_statusline(win_handle,
-                                                          buf_handle)
-   if special_stl ~= nil then return special_stl end
-   local left_inactive_stl = create_left_inactive_statusline(win_handle,
-                                                             buf_handle)
-   local right_inactive_stl = create_right_inactive_statusline(win_handle,
-                                                               buf_handle)
-   return left_inactive_stl .. '%=' .. right_inactive_stl
 end
 
 return M
