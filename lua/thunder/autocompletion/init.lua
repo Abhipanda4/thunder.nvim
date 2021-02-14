@@ -29,6 +29,7 @@ local function setup()
       'Operator';      -- Operator      = 24;
       'TypeParameter'; -- TypeParameter = 25;
    }
+
    completion.setup {
       enabled = true,
       autocomplete = true,
@@ -45,8 +46,8 @@ local function setup()
          nvim_lsp = true,
          nvim_lua = true,
          path = true,
+         buffer = true,
          tags = false,
-         buffer = false,
          calc = false,
          vsnip = false,
          spell = false,

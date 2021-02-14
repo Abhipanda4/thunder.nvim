@@ -1,0 +1,5 @@
+require("thunder/plugins").setup()
+require("thunder/lsp").setup()
+require("thunder/treesitter").setup()
+require("thunder/autocompletion").setup()
+require("thunder/formatting").setup()

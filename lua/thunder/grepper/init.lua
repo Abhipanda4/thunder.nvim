@@ -31,7 +31,7 @@ local function set_qf_list()
    results = {}
 end
 
-local function flashgrep(term)
+local function perform_grep(term)
    local stdout = vim.loop.new_pipe(false)
    local stderr = vim.loop.new_pipe(false)
    handle = vim.loop.spawn(
@@ -56,5 +56,5 @@ local function flashgrep(term)
 end
 
 return {
-   flashgrep = flashgrep
+   perform_grep = perform_grep
 }

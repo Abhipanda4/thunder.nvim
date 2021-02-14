@@ -1,9 +1,3 @@
-" ====================================================================
-" Name:        plugins/options.vim
-" Description: Settings for most options defined in :help options
-" Maintainer:  Abhisek Panda <abhipanda03@gmail.com>
-" ====================================================================
-
 " Use 24bit colors
 set termguicolors
 

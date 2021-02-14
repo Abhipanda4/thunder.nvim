@@ -115,7 +115,7 @@ local function make_centered_floating_window(opts)
    local border_winnr, border_bufnr = create_floating_window(border_opts, border_content, true)
    local primary_winnr, primary_bufnr = create_floating_window(primary_win_opts, nil, true)
 
-   local hl_color = string.format("NormalFloat:%s", opts.highlight_group or "Normal")
+   local hl_color = string.format("NormalFloat:%s", opts.highlight_group or "NormalFloat")
    vim.api.nvim_win_set_option(border_winnr, "winhl", hl_color)
    vim.api.nvim_win_set_option(primary_winnr, "winhl", hl_color)
    setup_autocmd(primary_bufnr, border_winnr)

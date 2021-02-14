@@ -29,5 +29,4 @@ endfunction
 function! thunder#init#setup() abort
   call s:disable_distribution_plugins()
   let g:loaded_python_provider = 0
-  let g:python3_host_prog = '/usr/local/bin/python3'
 endfunction

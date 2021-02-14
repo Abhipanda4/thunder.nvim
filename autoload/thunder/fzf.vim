@@ -12,17 +12,17 @@ endfunction
 
 function! s:GetFZFPalette() abort
     let l:fzf_colors = {
-        \ 'fg+': g:color_palette.yellow1,
-        \ 'bg+': g:color_palette.dark,
-        \ 'hl+': g:color_palette.yellow2,
-        \ 'fg': g:color_palette.light,
-        \ 'bg': g:color_palette.dark,
-        \ 'hl': g:color_palette.cyan1,
-        \ 'gutter': g:color_palette.dark,
-        \ 'info': g:color_palette.purple1,
-        \ 'pointer': g:color_palette.yellow1,
-        \ 'prompt': g:color_palette.purple1,
-        \ 'header': g:color_palette.purple1
+        \ 'fg+': g:color_palette.yellow,
+        \ 'bg+': g:color_palette.menu_grey,
+        \ 'hl+': g:color_palette.dark_yellow,
+        \ 'fg': g:color_palette.white,
+        \ 'bg': g:color_palette.menu_grey,
+        \ 'hl': g:color_palette.blue,
+        \ 'gutter': g:color_palette.menu_grey,
+        \ 'info': g:color_palette.purple,
+        \ 'pointer': g:color_palette.yellow,
+        \ 'prompt': g:color_palette.purple,
+        \ 'header': g:color_palette.purple
         \ }
     return join(map(items(l:fzf_colors), 'v:val[0] . ":" . v:val[1]'), ",")
 endfunction
@@ -64,7 +64,7 @@ function! thunder#fzf#FuzzyFindFiles() abort
     call fzf#run({
         \ 'source': s:GetCmdForFilesList(),
         \ 'options': s:GetFZFFileOptions(),
-        \ 'window': 'lua require("thunder/windows").make_centered_floating_window()',
+        \ 'window': 'lua require("thunder/utils/windows").make_centered_floating_window()',
         \ 'sink*': function('s:FZFFileHandler')
         \ })
 endfunction

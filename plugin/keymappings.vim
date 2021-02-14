@@ -1,9 +1,3 @@
-" ====================================================================
-" Name:        plugin/vanilla_mappings.vim
-" Description: keymaps that do not depend on 3rd party plugins
-" Maintainer:  Abhisek Panda <abhipanda03@gmail.com>
-" ====================================================================
-
 " Exchange functionality of : & ;
 nnoremap : ;
 vnoremap : ;
@@ -66,8 +60,8 @@ nnoremap [<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
 nnoremap ]<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
 
 " Quit vim easily
-nnoremap <leader>q :quit!<cr>
-nnoremap <leader>Q :qall!<cr>
+nnoremap <silent> <leader>q :quit!<cr>
+nnoremap <silent> <leader>Q :qall!<cr>
 
 " close all clutter windows easily
 nnoremap <silent> <leader>o :only<cr>

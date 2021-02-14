@@ -4,7 +4,6 @@ highlight clear
 if exists('syntax_on')
     syntax reset
 endif
-syntax reset
 
 let g:colors_name = "thunder"
 
@@ -13,40 +12,32 @@ let s:green = "#89ca78"
 let s:yellow = "#E5C07B"
 let s:dark_yellow = "#d8985f"
 let s:blue = "#52adf2"
-let s:purple = "#d55fde"
+let s:purple = "#cd78df"
 let s:cyan = "#00BFBF"
 let s:white = "#ABB2BF"
 let s:temp = "#BFB2AB"
 let s:black = "#282C34"
-let s:visual_black = "#5C6370"
+let s:visual_black = "#2B2C38"
 let s:comment_grey = "#5C6370"
 let s:gutter_fg_grey = "#4B5263"
 let s:cursor_grey = "#2C323C"
 let s:visual_grey = "#3E4452"
-let s:menu_grey = "#3E4452"
+let s:menu_grey = "#21252b"
 let s:special_grey = "#3B4048"
 let s:vertsplit = "#181A1F"
 
-" TODO: change names, maybe get colors from autoload
 let g:color_palette = {
-      \ "red1": s:red,
-      \ "red2": s:dark_red,
-      \ "green1": s:green,
-      \ "blue1": s:blue,
-      \ "blue2": s:blue,
-      \ "cyan1": s:cyan,
-      \ "cyan2": s:cyan,
-      \ "yellow1": s:yellow,
-      \ "yellow2": s:dark_yellow,
-      \ "yellow3": s:yellow,
-      \ "purple1": s:purple,
-      \ "magenta1": s:purple,
-      \ "magenta2": s:purple,
-      \ "grey1": s:visual_black,
-      \ "grey2": s:visual_black,
-      \ "grey3": s:visual_black,
-      \ "light": s:white,
-      \ "dark": s:black,
+      \ "red": s:red,
+      \ "green": s:green,
+      \ "blue": s:blue,
+      \ "cyan": s:cyan,
+      \ "yellow": s:yellow,
+      \ "dark_yellow": s:dark_yellow,
+      \ "purple": s:purple,
+      \ "white": s:white,
+      \ "black": s:black,
+      \ "grey": s:comment_grey,
+      \ "menu_grey": s:menu_grey
       \ }
 
 function! s:h(group, style)
@@ -118,6 +109,7 @@ call s:h("ModeMsg", {})
 call s:h("MoreMsg", {})
 call s:h("NonText", { "fg": s:special_grey })
 call s:h("Normal", { "fg": s:white, "bg": s:black })
+call s:h("NormalFloat", { "fg": s:white, "bg": s:menu_grey })
 call s:h("Pmenu", { "bg": s:menu_grey })
 call s:h("PmenuSel", { "fg": s:black, "bg": s:blue })
 call s:h("PmenuSbar", { "bg": s:special_grey })
@@ -130,30 +122,19 @@ call s:h("SpellBad", { "fg": s:red, "gui": "underline", "cterm": "underline" })
 call s:h("SpellCap", { "fg": s:dark_yellow })
 call s:h("SpellLocal", { "fg": s:dark_yellow })
 call s:h("SpellRare", { "fg": s:dark_yellow })
-call s:h("StatusLine", { "fg": s:white, "bg": s:cursor_grey })
-call s:h("StatusLineNC", { "fg": s:comment_grey })
-call s:h("StatusLineTerm", { "fg": s:white, "bg": s:cursor_grey })
-call s:h("StatusLineTermNC", { "fg": s:comment_grey })
+call s:h("StatusLine", { "fg": s:black, "bg": s:black })
+call s:h("StatusLineNC", { "bg": s:cursor_grey })
+call s:h("StatusLineTerm", { "fg": s:white, "bg": s:black })
+call s:h("StatusLineTermNC", { "bg": s:cursor_grey })
 call s:h("TabLine", { "fg": s:comment_grey })
 call s:h("TabLineFill", {})
 call s:h("TabLineSel", { "fg": s:white })
 call s:h("Terminal", { "fg": s:white, "bg": s:black })
 call s:h("Title", { "fg": s:green })
-call s:h("Visual", { "fg": s:visual_black, "bg": s:visual_grey })
+call s:h("Visual", { "bg": s:visual_grey })
 call s:h("VisualNOS", { "bg": s:visual_grey })
 call s:h("WarningMsg", { "fg": s:yellow })
 call s:h("WildMenu", { "fg": s:black, "bg": s:blue })
-
-" Statusline higroups
-" call s:h("User1", { "fg": s:black, "bg": s:cyan, "gui": "bold" })
-" call s:h("User2", { "fg": s:dark, "bg": s:yellow1, "gui": "bold" })
-" call s:h("User3", { "fg": s:dark, "bg": s:purple1 })
-" call s:h("User4", { "fg": s:dark, "bg": s:blue2 })
-" call s:h("User5", { "fg": s:white })
-" call s:h("User6", { "fg": s:purple })
-" call s:h("User7", { "fg": s:light })
-" call s:h("User8", { "fg": s:light, "bg": s:grey3 })
-" call s:h("User9", { "fg": s:light, "bg": s:grey3 })
 
 " Treesitter highlights
 call s:h('TSBoolean',  { "fg": s:dark_yellow })
@@ -184,23 +165,24 @@ call s:h('TSTypeBuiltin', { "fg": s:cyan })
 call s:h('TSVariable', { "fg": s:white })
 call s:h('TSVariableBuiltin', { "fg": s:red })
 
-" " LSP utils
-" call s:h("LspDiagnosticsSignError", { "fg": s:red2, "bg": s:dark })
-" call s:h("LspDiagnosticsSignWarning", { "fg": s:yellow1, "bg": s:dark })
-" call s:h("LspDiagnosticsSignInformation", { "fg": s:cyan1, "bg": s:dark })
-" call s:h("LspDiagnosticsSignHint", { "fg": s:cyan1, "bg": s:dark })
+" LSP utils
+call s:h("LspDiagnosticsSignError", { "fg": s:red, "bg": s:black })
+call s:h("LspDiagnosticsSignWarning", { "fg": s:dark_yellow, "bg": s:black })
+call s:h("LspDiagnosticsSignInformation", { "fg": s:green, "bg": s:black })
+call s:h("LspDiagnosticsSignHint", { "fg": s:green, "bg": s:black })
 
-" call s:h("LspDiagnosticsPreviewError", { "fg": s:red2, "bg": s:dark })
-" call s:h("LspDiagnosticsPreviewWarning", { "fg": s:yellow1, "bg": s:dark })
-" call s:h("LspDiagnosticsPreviewInformation", { "fg": s:cyan1, "bg": s:dark })
-" call s:h("LspDiagnosticsPreviewHint", { "fg": s:cyan1, "bg": s:dark })
+call s:h("LspDiagnosticsPreviewError", { "fg": s:red, "bg": s:black })
+call s:h("LspDiagnosticsPreviewWarning", { "fg": s:dark_yellow, "bg": s:black })
+call s:h("LspDiagnosticsPreviewInformation", { "fg": s:green, "bg": s:black })
+call s:h("LspDiagnosticsPreviewHint", { "fg": s:green, "bg": s:black })
 
-" sign define LspDiagnosticsSignError text=▊ texthl=LspDiagnosticsSignError linehl= numhl=
-" sign define LspDiagnosticsSignWarning text=▊ texthl=LspDiagnosticsSignWarning linehl= numhl=
-" sign define LspDiagnosticsSignInformation text=▊ texthl=LspDiagnosticsSignInformation linehl= numhl=
-" sign define LspDiagnosticsSignHint text=▊ texthl=LspDiagnosticsSignHint linehl= numhl=
+sign define LspDiagnosticsSignError text= texthl=LspDiagnosticsSignError linehl= numhl=
+sign define LspDiagnosticsSignWarning text= texthl=LspDiagnosticsSignWarning linehl= numhl=
+sign define LspDiagnosticsSignInformation text= texthl=LspDiagnosticsSignInformation linehl= numhl=
+sign define LspDiagnosticsSignHint text= texthl=LspDiagnosticsSignHint linehl= numhl=
 
-" " Plugins
-" call s:h('CleverFDefaultLabel', {"fg": s:yellow2, "gui": "bold,underline"})
-" call s:h('NvimTreeFolderName', {"fg": s:blue2})
-" call s:h('NvimTreeFolderIcon', {"fg": s:purple1})
+" Plugins
+call s:h('CleverFDefaultLabel', {"fg": s:yellow, "gui": "bold,underline"})
+call s:h('NvimTreeFolderName', {"fg": s:blue})
+call s:h('NvimTreeFolderIcon', {"fg": s:yellow})
+call s:h('NvimTreeRootFolder', {"fg": s:purple})

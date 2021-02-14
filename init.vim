@@ -4,13 +4,17 @@
 " Maintainer:  Abhisek Panda <abhipanda03@gmail.com>
 " ====================================================================
 
+" Set encoding
 scriptencoding utf-8
 
+" Set some global variables
 call thunder#init#setup()
 
-" set colorscheme
-set background=dark
+" Set colorscheme
 colorscheme thunder
 
-" Use space key as leader
+" Set leader key for mappings
 let g:mapleader = "\<Space>"
+
+" Setup lua modules
+lua require("thunder")
